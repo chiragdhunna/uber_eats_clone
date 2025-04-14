@@ -1,44 +1,27 @@
-// ✅ PLUGINS MUST BE FIRST — absolutely nothing before this
-plugins {
-    id 'com.google.gms.google-services' version '4.4.2' apply false
-}
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-// ✅ THEN buildscript
 buildscript {
     ext {
         buildToolsVersion = findProperty('android.buildToolsVersion') ?: '35.0.0'
         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
-        kotlinVersion = '1.9.24'
+        kotlinVersion = findProperty('android.kotlinVersion') ?: '1.9.25'
         ndkVersion = "26.1.10909125"
     }
-
     repositories {
         google()
         mavenCentral()
     }
-
     dependencies {
         classpath('com.android.tools.build:gradle:8.3.0')
         classpath('com.facebook.react:react-native-gradle-plugin')
         classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
-        classpath 'com.google.gms:google-services:4.4.2'
+        classpath 'com.google.gms:google-services:4.4.2' // if still needed
     }
-}
-
-// ✅ Move debug print to a task or inline block
-gradle.taskGraph.whenReady {
-    println "[DEBUG] Kotlin version used: ${project.ext.kotlinVersion}"
 }
 
 apply plugin: "com.facebook.react.rootproject"
-
-tasks.all {
-    doFirst {
-        println "[DEBUG] Running task: $name"
-    }
-}
 
 allprojects {
     repositories {
