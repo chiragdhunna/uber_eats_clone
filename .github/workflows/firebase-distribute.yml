@@ -51,7 +51,8 @@ jobs:
       - name: Print Gradle & Kotlin info
         run: |
           ./gradlew -v
-          echo "Kotlin version from Gradle: $(grep 'kotlinVersion' ../build.gradle || true)"
+          echo "Kotlin version from build.gradle:"
+          grep 'kotlinVersion' build.gradle || true
           echo "Gradle properties:"
           cat gradle.properties || true
 
