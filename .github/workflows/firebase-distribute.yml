@@ -47,6 +47,9 @@ jobs:
       - name: 🔐 Authenticate Firebase CLI
         run: echo "${{ secrets.FIREBASE_TOKEN }}" > ~/.firebase_token
 
+      - name: 🛠 Fix Gradlew Permission
+        run: chmod +x android/gradlew
+
       - name: 🚀 Distribute via Fastlane
         working-directory: android
         env:
