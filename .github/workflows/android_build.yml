@@ -37,6 +37,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
       - name: Build and Distribute with Fastlane
         working-directory: android
         run: fastlane beta
