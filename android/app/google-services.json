@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "471625841737",
+    "project_id": "uber-eats-clone-16f71",
+    "storage_bucket": "uber-eats-clone-16f71.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471625841737:android:604613a3e5062dd8a65398",
+        "android_client_info": {
+          "package_name": "com.chiragdhunna.UBER_EATS_CLONE_PROJECT"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuQN-pnptR-SDSItfxIozAFOt42TYnPfM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
