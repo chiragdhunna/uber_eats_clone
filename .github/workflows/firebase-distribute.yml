@@ -41,6 +41,9 @@ jobs:
           npm install --legacy-peer-deps
           bundle install
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build and Distribute to Firebase
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
