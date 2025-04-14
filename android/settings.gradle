@@ -1,4 +1,13 @@
 pluginManagement {
+
+   resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "org.jetbrains.kotlin.jvm" || requested.id.id == "org.jetbrains.kotlin.android") {
+                useVersion("1.9.25")
+            }
+        }
+    }
+
     repositories {
         google()
         gradlePluginPortal()

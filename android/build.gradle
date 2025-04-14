@@ -43,8 +43,10 @@ subprojects {
     configurations.all {
         resolutionStrategy.eachDependency { details ->
             if (details.requested.group == 'org.jetbrains.kotlin') {
-                details.useVersion "1.9.24"
+                println("[FORCE] Kotlin version: Forcing ${details.requested.name} to 1.9.25")
+                details.useVersion "1.9.25"
             }
         }
     }
 }
+

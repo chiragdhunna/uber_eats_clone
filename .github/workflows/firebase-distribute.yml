@@ -21,7 +21,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.2" # Use compatible version with Fastlane
+          ruby-version: "3.2"
           bundler-cache: true
 
       - name: Setup Java
@@ -35,6 +35,11 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Clean Gradle cache (optional)
+        run: |
+          rm -rf ~/.gradle/caches
+          rm -rf ~/.gradle/daemon
+
       - name: Install Dependencies
         run: |
           npm install -g expo-cli
@@ -45,7 +50,7 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Stop Gradle Daemons (optional safety)
+      - name: Stop Gradle Daemons
         run: ./gradlew --stop
 
       - name: Print Gradle & Kotlin info
@@ -58,6 +63,9 @@ jobs:
 
       - name: Dump Compose Compiler dependency tree
         run: ./gradlew app:dependencies --configuration releaseCompileClasspath
+
+      - name: Log Kotlin Gradle Plugin Version
+        run: ./gradlew :expo-modules-core:dependencies --configuration kotlinCompilerClasspath || true
 
       - name: Build and Distribute to Firebase
         env:
