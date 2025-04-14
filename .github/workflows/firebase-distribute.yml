@@ -42,15 +42,15 @@ jobs:
           bundle install
           echo "org.gradle.jvmargs=-Xmx2048m -Dkotlin.compiler.execution.strategy=in-process" >> gradle.properties
 
-      - name: Stop Gradle Daemons (optional safety)
-        run: ./gradlew --stop
-
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+
+      - name: Stop Gradle Daemons (optional safety)
+        run: ./gradlew --stop
 
       - name: Build and Distribute to Firebase
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_TOKEN  }}
+          FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
           bundle exec fastlane firebase
