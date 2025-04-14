@@ -1,10 +1,4 @@
-// ✅ This must be the very first block — before everything else
-plugins {
-  id 'com.google.gms.google-services' version '4.4.2' apply false
-}
-
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
+// ✅ FIRST: Required for Gradle < 7 compatibility and all legacy plugin setups
 buildscript {
     ext {
         buildToolsVersion = findProperty('android.buildToolsVersion') ?: '35.0.0'
@@ -26,15 +20,22 @@ buildscript {
     }
 }
 
+// ✅ THEN: Plugin block AFTER buildscript
+plugins {
+    id 'com.google.gms.google-services' version '4.4.2' apply false
+}
+
 apply plugin: "com.facebook.react.rootproject"
 
 allprojects {
     repositories {
         maven {
-            url(new File(['node', '--print', "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), '../android'))
+            url(new File(['node', '--print', "require.resolve('react-native/package.json')"]
+                .execute(null, rootDir).text.trim(), '../android'))
         }
         maven {
-            url(new File(['node', '--print', "require.resolve('jsc-android/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim(), '../dist'))
+            url(new File(['node', '--print', "require.resolve('jsc-android/package.json', { paths: [require.resolve('react-native/package.json')] })"]
+                .execute(null, rootDir).text.trim(), '../dist'))
         }
 
         google()
