@@ -42,7 +42,7 @@ jobs:
 
       - name: 📦 Install Node Modules & Verify Plugin Resolution
         run: |
-          npm ci
+          npm install --legacy-peer-deps
           echo "✅ react-native path:"
           node --print "require.resolve('react-native/package.json')"
           echo "✅ gradle-plugin path:"
