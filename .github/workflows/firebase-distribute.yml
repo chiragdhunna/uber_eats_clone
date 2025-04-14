@@ -40,6 +40,13 @@ jobs:
           echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> android/gradle.properties
           echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> android/gradle.properties
 
+      - name: 🧹 Clean Gradle Cache (to avoid Kotlin 2.1.0 artifacts)
+        run: |
+          rm -rf ~/.gradle/caches/
+          rm -rf ~/.gradle/daemon/
+          rm -rf ~/.gradle/native/
+          rm -rf ~/.gradle/wrapper/
+
       - name: 📦 Install Node Modules & Verify Plugin Resolution
         run: |
           npm install --legacy-peer-deps
