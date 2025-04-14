@@ -2,9 +2,6 @@ plugins {
     id 'com.google.gms.google-services' version '4.4.2' apply false
 }
 
-
-
-
 buildscript {
     ext {
         buildToolsVersion = findProperty('android.buildToolsVersion') ?: '35.0.0'
@@ -12,9 +9,9 @@ buildscript {
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
         kotlinVersion = '1.9.24'
-        println "[DEBUG] Kotlin version used: ${kotlinVersion}"
         ndkVersion = "26.1.10909125"
     }
+
     repositories {
         google()
         mavenCentral()
@@ -26,6 +23,8 @@ buildscript {
         classpath 'com.google.gms:google-services:4.4.2'
     }
 }
+
+println "[DEBUG] Kotlin version used: ${kotlinVersion}"
 
 apply plugin: "com.facebook.react.rootproject"
 
