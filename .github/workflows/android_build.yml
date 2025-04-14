@@ -37,12 +37,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Install Android SDK
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 31
-          script: echo "SDK Setup Only"
-
       - name: Build and Distribute with Fastlane
         working-directory: android
         run: fastlane beta
