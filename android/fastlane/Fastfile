@@ -1,0 +1,15 @@
+default_platform(:android)
+
+platform :android do
+  desc "Distribute release build to Firebase App Distribution"
+  lane :firebase do
+    gradle(task: "assembleRelease") # Build APK
+
+    firebase_app_distribution(
+      app: "1:471625841737:android:604613a3e5062dd8a65398",
+      testers: "chiragdhunna2468@gmail.com", # comma-separated emails
+      release_notes: "Latest build from Fastlane 🚀",
+      firebase_cli_path: "firebase" # optional if CLI in PATH
+    )
+  end
+end

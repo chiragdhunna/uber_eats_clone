@@ -1,0 +1,49 @@
+name: Android Firebase Distribution
+
+on:
+  push:
+    branches:
+      - main # Trigger on every push to main branch
+
+jobs:
+  build:
+    name: Build & Distribute APK
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: android
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2" # Use compatible version with Fastlane
+          bundler-cache: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Dependencies
+        run: |
+          npm install -g expo-cli
+          npm install
+          bundle install
+
+      - name: Build and Distribute to Firebase
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_TOKEN  }}
+        run: |
+          bundle exec fastlane firebase
