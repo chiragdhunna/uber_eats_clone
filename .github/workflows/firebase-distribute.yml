@@ -38,7 +38,7 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install -g expo-cli
-          npm install
+          npm install --legacy-peer-deps
           bundle install
 
       - name: Build and Distribute to Firebase
