@@ -1,8 +1,8 @@
-tasks.all {
-    doFirst {
-        println "[DEBUG] Running task: $name"
-    }
+plugins {
+    id 'com.google.gms.google-services' version '4.4.2' apply false
 }
+
+
 
 
 buildscript {
@@ -27,11 +27,13 @@ buildscript {
     }
 }
 
-plugins {
-    id 'com.google.gms.google-services' version '4.4.2' apply false
-}
-
 apply plugin: "com.facebook.react.rootproject"
+
+tasks.all {
+    doFirst {
+        println "[DEBUG] Running task: $name"
+    }
+}
 
 allprojects {
     repositories {
