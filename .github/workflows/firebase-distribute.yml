@@ -1,0 +1,75 @@
+name: Android Firebase Distribution
+
+on:
+  push:
+    branches:
+      - main # Trigger on every push to main branch
+
+jobs:
+  build:
+    name: Build & Distribute APK
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: android
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Clean Gradle cache (optional)
+        run: |
+          rm -rf ~/.gradle/caches
+          rm -rf ~/.gradle/daemon
+
+      - name: Install Dependencies
+        run: |
+          npm install -g expo-cli
+          npm install --legacy-peer-deps
+          bundle install
+          echo "org.gradle.jvmargs=-Xmx2048m -Dkotlin.compiler.execution.strategy=in-process" >> gradle.properties
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Stop Gradle Daemons
+        run: ./gradlew --stop
+
+      - name: Print Gradle & Kotlin info
+        run: |
+          ./gradlew -v
+          echo "Kotlin version from build.gradle:"
+          grep 'kotlinVersion' build.gradle || true
+          echo "Gradle properties:"
+          cat gradle.properties || true
+
+      - name: Dump Compose Compiler dependency tree
+        run: ./gradlew app:dependencies --configuration releaseCompileClasspath
+
+      - name: Log Kotlin Gradle Plugin Version
+        run: ./gradlew :expo-modules-core:dependencies --configuration kotlinCompilerClasspath || true
+
+      - name: Build and Distribute to Firebase
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          bundle exec fastlane firebase
