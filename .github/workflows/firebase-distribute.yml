@@ -40,6 +40,16 @@ jobs:
           echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> android/gradle.properties
           echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> android/gradle.properties
 
+      - name: 📦 Install Node Modules & Verify Plugin Resolution
+        run: |
+          npm ci
+          echo "✅ react-native path:"
+          node --print "require.resolve('react-native/package.json')"
+          echo "✅ gradle-plugin path:"
+          node --print "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })"
+          echo "✅ expo path (optional):"
+          node --print "require.resolve('expo/package.json')" || echo "expo not found"
+
       - name: 📦 Install Fastlane Dependencies
         working-directory: android
         run: bundle install
