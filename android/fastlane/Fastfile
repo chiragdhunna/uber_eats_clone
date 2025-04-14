@@ -10,7 +10,7 @@ platform :android do
 
     firebase_app_distribution(
       app: "1:471625841737:android:604613a3e5062dd8a65398",
-      testers: "yourtester1@example.com,yourtester2@example.com", # comma-separated
+      testers: "chiragdhunna2468@@gmail.com", # comma-separated
       release_notes: "Auto build from GitHub Actions"
     )
   end
