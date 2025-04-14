@@ -23,10 +23,11 @@ jobs:
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
 
-      - name: Install Ruby & Fastlane
+      - name: Install Ruby and Fastlane
         run: |
+          sudo apt-get update
           sudo apt-get install ruby-full -y
-          gem install fastlane -NV
+          sudo gem install fastlane -NV
 
       - name: Install Node & Yarn
         uses: actions/setup-node@v3
