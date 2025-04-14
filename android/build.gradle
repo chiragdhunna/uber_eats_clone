@@ -1,3 +1,10 @@
+tasks.all {
+    doFirst {
+        println "[DEBUG] Running task: $name"
+    }
+}
+
+
 buildscript {
     ext {
         buildToolsVersion = findProperty('android.buildToolsVersion') ?: '35.0.0'
@@ -5,6 +12,7 @@ buildscript {
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
         kotlinVersion = '1.9.0' 
+        println "[DEBUG] Kotlin version used: ${kotlinVersion}"
         ndkVersion = "26.1.10909125"
     }
     repositories {

@@ -48,6 +48,16 @@ jobs:
       - name: Stop Gradle Daemons (optional safety)
         run: ./gradlew --stop
 
+      - name: Print Gradle & Kotlin info
+        run: |
+          ./gradlew -v
+          echo "Kotlin version from Gradle: $(grep 'kotlinVersion' ../build.gradle || true)"
+          echo "Gradle properties:"
+          cat gradle.properties || true
+
+      - name: Dump Compose Compiler dependency tree
+        run: ./gradlew app:dependencies --configuration releaseCompileClasspath
+
       - name: Build and Distribute to Firebase
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
