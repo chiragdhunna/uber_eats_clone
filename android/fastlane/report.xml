@@ -2,20 +2,15 @@
 <testsuites>
   <testsuite name="fastlane.lanes">
     
-    
-    
-      
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.0010083">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.001037">
         
       </testcase>
     
-      
-      <testcase classname="fastlane.lanes" name="1: assembleRelease" time="31.7178603">
+      <testcase classname="fastlane.lanes" name="1: assembleRelease" time="1332.185819">
         
       </testcase>
     
-      
-      <testcase classname="fastlane.lanes" name="2: firebase_app_distribution" time="28.2746329">
+      <testcase classname="fastlane.lanes" name="2: firebase_app_distribution" time="27.2178896">
         
       </testcase>
     

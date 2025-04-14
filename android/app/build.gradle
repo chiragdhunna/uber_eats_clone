@@ -185,3 +185,5 @@ dependencies {
     releaseImplementation files() // Prevents it from breaking release build
 
 }
+
+apply plugin: 'com.google.gms.google-services'
