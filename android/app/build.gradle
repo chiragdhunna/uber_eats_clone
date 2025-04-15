@@ -5,6 +5,16 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == "com.google.android.gms"
+                && details.requested.name.startsWith("play-services-measurement")) {
+            details.useVersion "21.3.0"
+        }
+    }
+}
+
+
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
 react {
@@ -81,8 +91,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     // Downgraded to fix Kotlin compatibility issue with 1.9.25
+    // ✅ Kotlin 1.9.25-safe Google Play Services
     implementation 'com.google.android.gms:play-services-measurement-api:21.3.0'
+    implementation 'com.google.android.gms:play-services-measurement-base:21.3.0'
+    implementation 'com.google.android.gms:play-services-measurement-sdk:21.3.0'
+    implementation 'com.google.android.gms:play-services-measurement-sdk-api:21.3.0'
     implementation 'com.google.android.gms:play-services-measurement-impl:21.3.0'
+
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
