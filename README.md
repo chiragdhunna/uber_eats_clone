@@ -1,75 +1,124 @@
 # Uber Eats Clone
 
-Welcome to the Uber Eats Clone project! This repository contains the source code for a mobile application that mimics the functionality of the popular food delivery service, Uber Eats. The application is built using React Native and integrates various features to provide a seamless user experience.
+Welcome to the **Uber Eats Clone** project! This is a full-featured mobile application that mimics the core functionality of Uber Eats, built with **React Native** and **Expo Bare Workflow**. It features Firebase integration for authentication and distribution, native Android builds with Kotlin and Java 17, and continuous integration with GitHub Actions and Fastlane.
 
-## Features
+---
 
-- Browse restaurants and food items
-- View restaurant details and menus
-- Place orders and track delivery status
-- User authentication and profile management
-- Integration with Firebase for backend services
+## 🚀 Features
 
-## Installation
+- 🍔 Browse restaurants and food items
+- 📋 View restaurant menus and item details
+- 🛒 Place orders and track delivery status
+- 🔐 Firebase authentication and profile management
+- 🔄 Real-time Redux-powered state management
+- 📦 Firebase App Distribution (via Fastlane)
+- 🧪 Kotlin, Java 17 + Gradle 8.10.2 configuration
+- ⚙️ CI/CD with GitHub Actions for build & release
 
-To get started with the project, follow these steps:
+---
 
-1. **Clone the repository:**
+## 🛠️ Installation
 
-   <?>
-   git clone https://github.com/yourusername/uber_eats_clone.git
-   <?>
+### 1. Clone the repository
 
-2. **Navigate to the project directory:**
+```bash
+git clone https://github.com/chiragdhunna/uber_eats_clone.git
+cd uber_eats_clone
+```
 
-   <?>
-   cd uber_eats_clone
-   <?>
+### 2. Install dependencies
 
-3. **Install dependencies:**
+```bash
+npm install
+```
 
-   Ensure you have Node.js and npm installed. Then run:
+### 3. Setup Firebase
 
-   <?>
-   npm install
-   <?>
+- Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
+- Configure authentication and app ID
+- Place your Firebase web config in a `firebase.js` file in the root directory
 
-4. **Set up Firebase:**
+### 4. Prepare for Android
 
-   - Create a Firebase project in the [Firebase Console](https://console.firebase.google.com/).
-   - Add your Firebase configuration to the `firebase.js` file.
+```bash
+cd android
+./gradlew clean
+cd ..
+npx react-native run-android
+```
 
-5. **Run the application:**
+> ✅ Ensure Java 17 and Android Studio are installed
 
-   For Android:
+### 5. (Optional) iOS Setup
 
-   <?>
-   npx react-native run-android
-   <?>
+Only applicable if you're building on macOS with Xcode installed.
 
-   For iOS (requires macOS):
+```bash
+npx react-native run-ios
+```
 
-   <?>
-   npx react-native run-ios
-   <?>
+---
 
-## Project Structure
+## 📁 Project Structure
 
-- **android/**: Contains Android-specific files and configurations.
-- **assets/**: Contains images, icons, and animations used in the app.
-- **components/**: Contains reusable UI components.
-- **screens/**: Contains the main screens of the application.
-- **redux/**: Contains Redux setup for state management.
-- **firebase.js**: Firebase configuration and initialization.
+```
+uber_eats_clone/
+├── android/                  # Native Android configuration and Gradle setup
+├── assets/                   # Images, icons, and animations
+├── components/               # Reusable UI components
+├── redux/                    # Redux slices, store, actions
+├── screens/                  # All major application screens
+├── firebase.js               # Firebase setup
+├── App.js                    # Main app entry point
+└── ...
+```
 
-## Contributing
+---
 
-We welcome contributions to the Uber Eats Clone project! If you have any improvements or bug fixes, feel free to submit a pull request.
+## 🤖 CI/CD & Distribution
 
-## License
+### Fastlane Firebase Distribution
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+The app uses Fastlane to distribute APKs to Firebase Testers:
 
-## Contact
+- Firebase token, app ID, and keystore are stored as GitHub Secrets
+- APKs are built using `assembleRelease`
 
-For any questions or feedback, please contact [your email address].
+### GitHub Releases
+
+On every push to `main`, the APK is:
+
+- Built
+- Sent to Firebase
+- Attached to a [GitHub Release](https://github.com/chiragdhunna/uber_eats_clone/releases)
+
+> See `.github/workflows/build.yml` for the full pipeline setup
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions!
+
+- Submit a pull request with clear descriptions
+- For major changes, open an issue first to discuss
+- Follow existing code style and patterns
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## 📬 Contact
+
+Have questions, ideas, or feedback?
+
+- Open an issue
+- Or email at: `youremail@example.com`
+
+---
+
+**Made with ❤️ by @chiragdhunna**
