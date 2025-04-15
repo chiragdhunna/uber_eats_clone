@@ -67,6 +67,12 @@ jobs:
       - name: 🛠 Fix Gradlew Permission
         run: chmod +x android/gradlew
 
+      - name: 🧪 Run Kotlin Compilation Check with Debug Logs
+        working-directory: android
+        run: |
+          echo "🧪 Running Kotlin compile diagnostics..."
+          ./gradlew assembleRelease --stacktrace --info || true
+
       - name: 🚀 Distribute via Fastlane
         working-directory: android
         env:
