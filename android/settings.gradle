@@ -38,7 +38,7 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = 'UBER_EATS_CLONE_PROJECT'
+rootProject.name = 'UBER EATS'
 
 dependencyResolutionManagement {
   versionCatalogs {
