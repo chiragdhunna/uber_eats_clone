@@ -1,6 +1,6 @@
 # Uber Eats Clone
 
-Welcome to the **Uber Eats Clone** project! This is a full-featured mobile application that mimics the core functionality of Uber Eats, built with **React Native** and **Expo Bare Workflow**. It features Firebase integration for authentication and distribution, native Android builds with Kotlin and Java 17, and continuous integration with GitHub Actions and Fastlane.
+Welcome to the **Uber Eats Clone** project! This is a full-featured mobile application that mimics the core functionality of Uber Eats, built with **React Native** using the **Expo Bare Workflow**. It supports custom native modules, Firebase integration, and is set up for production-ready Android builds with Kotlin, Java 17, and Gradle 8.10+.
 
 ---
 
@@ -11,13 +11,24 @@ Welcome to the **Uber Eats Clone** project! This is a full-featured mobile appli
 - 🛒 Place orders and track delivery status
 - 🔐 Firebase authentication and profile management
 - 🔄 Real-time Redux-powered state management
-- 📦 Firebase App Distribution (via Fastlane)
-- 🧪 Kotlin, Java 17 + Gradle 8.10.2 configuration
-- ⚙️ CI/CD with GitHub Actions for build & release
+- ⚙️ Native Android builds (Kotlin + Java 17)
+- 🧒 Fastlane + Firebase App Distribution
+- 🚀 CI/CD with GitHub Actions
 
 ---
 
-## 🛠️ Installation
+## 🧑‍💻 Workflow
+
+This project uses the **Expo Bare Workflow**, which means:
+
+- You have full access to native code (Android/iOS folders exist).
+- Expo modules are installed and used (`expo-modules-core`, `expo-dev-client`, etc.).
+- You are responsible for native builds (Gradle for Android, Xcode for iOS).
+- It is **not** managed by `expo start` Metro bundler alone — native compilation is required.
+
+---
+
+## 🛠️ Installation & Build Setup
 
 ### 1. Clone the repository
 
@@ -29,33 +40,73 @@ cd uber_eats_clone
 ### 2. Install dependencies
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
+
+> ℹ️ We use `--legacy-peer-deps` to avoid peer version conflicts in some older React Native and Expo packages.
+
+---
 
 ### 3. Setup Firebase
 
 - Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-- Configure authentication and app ID
-- Place your Firebase web config in a `firebase.js` file in the root directory
+- Enable Authentication (e.g., email/password, phone)
+- Place your Firebase config in a `firebase.js` file at the project root
 
-### 4. Prepare for Android
+---
 
-```bash
-cd android
-./gradlew clean
-cd ..
-npx react-native run-android
-```
+### 4. Rebuild Native Code (✅ Must-Do Before First Build)
 
-> ✅ Ensure Java 17 and Android Studio are installed
-
-### 5. (Optional) iOS Setup
-
-Only applicable if you're building on macOS with Xcode installed.
+Run this to regenerate the native code with clean versions:
 
 ```bash
-npx react-native run-ios
+rm -rf node_modules/ package-lock.json android ios .expo
+npm install --legacy-peer-deps
+npx expo prebuild
 ```
+
+---
+
+### 5. Run Android App
+
+```bash
+npx expo run:android
+```
+
+> ✅ Make sure you have Android Studio installed and Java 17 configured
+
+---
+
+### 6. (Optional) Run on iOS (macOS only)
+
+```bash
+npx expo run:ios
+```
+
+> You must have Xcode and CocoaPods installed
+
+---
+
+## 🚼 Troubleshooting Common Issues
+
+### Expo Dev Launcher Version Error
+
+If you encounter:
+
+```
+Could not find host.exp.exponent:expo-dev-launcher:5.0.35
+```
+
+Run this full clean command:
+
+```bash
+rm -rf node_modules/ package-lock.json android ios .expo
+npm install --legacy-peer-deps
+npx expo prebuild
+npx expo run:android
+```
+
+This fixes native version mismatches from previous builds.
 
 ---
 
@@ -63,36 +114,53 @@ npx react-native run-ios
 
 ```
 uber_eats_clone/
-├── android/                  # Native Android configuration and Gradle setup
+├── android/                  # Native Android (auto-generated via prebuild)
+├── ios/                      # Native iOS (auto-generated via prebuild)
 ├── assets/                   # Images, icons, and animations
 ├── components/               # Reusable UI components
-├── redux/                    # Redux slices, store, actions
-├── screens/                  # All major application screens
-├── firebase.js               # Firebase setup
-├── App.js                    # Main app entry point
+├── redux/                    # Redux store, slices, and actions
+├── screens/                  # Application screens
+├── workflows/                # CI/CD scripts (e.g., Fastlane YAML)
+├── firebase.js               # Firebase config
+├── App.js                    # App entry point
+├── app.json                  # Expo and build config
 └── ...
 ```
 
 ---
 
-## 🤖 CI/CD & Distribution
+## 🤖 CI/CD & Firebase Distribution
 
-### Fastlane Firebase Distribution
+### Fastlane Setup
 
-The app uses Fastlane to distribute APKs to Firebase Testers:
+- The app uses Fastlane for APK building and Firebase App Distribution.
+- Secrets (keystore, Firebase token, app ID) are stored in GitHub Secrets.
+- GitHub Actions build the APK and trigger distribution.
 
-- Firebase token, app ID, and keystore are stored as GitHub Secrets
-- APKs are built using `assembleRelease`
+### GitHub Actions
 
-### GitHub Releases
+On every push to `main`:
 
-On every push to `main`, the APK is:
+- APK is built using Fastlane
+- Uploaded to Firebase Testers
+- Tagged as a GitHub Release with APK attached
 
-- Built
-- Sent to Firebase
-- Attached to a [GitHub Release](https://github.com/chiragdhunna/uber_eats_clone/releases)
+> See `.github/workflows/build.yml` for configuration
 
-> See `.github/workflows/build.yml` for the full pipeline setup
+---
+
+## ✅ .gitignore Best Practices
+
+Make sure these are **not committed**:
+
+```
+android/
+ios/
+node_modules/
+.expo/
+```
+
+They are auto-generated and machine-specific.
 
 ---
 
@@ -100,25 +168,19 @@ On every push to `main`, the APK is:
 
 We welcome contributions!
 
-- Submit a pull request with clear descriptions
-- For major changes, open an issue first to discuss
-- Follow existing code style and patterns
+- Submit a pull request with a clear description
+- For major changes, open an issue first
+- Follow code style and file structure conventions
 
 ---
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## 📬 Contact
+## 📨 Contact
 
 Have questions, ideas, or feedback?
 
-- Open an issue
-- Or email at: `youremail@example.com`
+- Open an issue on GitHub
+- Or email at: `chiragdhunna2468@gmail.com`
 
 ---
 
-**Made with ❤️ by @chiragdhunna**
+**Made with ❤️ by [@chiragdhunna](https://github.com/chiragdhunna)**
