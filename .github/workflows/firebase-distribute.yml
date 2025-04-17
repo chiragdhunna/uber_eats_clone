@@ -16,6 +16,7 @@ jobs:
     env:
       JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
       GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+      DEBUG_MODE: false
 
     steps:
       - name: 📥 Checkout Code
@@ -66,6 +67,7 @@ jobs:
           echo "GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY" > .env
 
       - name: 🧪 Check .env Contents (DEBUG ONLY)
+        if: env.DEBUG_MODE == 'true'
         run: cat .env
 
       - name: 📦 Install Fastlane Dependencies
