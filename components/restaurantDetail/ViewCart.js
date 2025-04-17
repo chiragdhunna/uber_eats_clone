@@ -29,9 +29,7 @@ export default function ViewCart({ navigation }) {
     currency: "USD",
   });
 
-  // console.log(totalUSD);
-
-  const addOrderToFireBase = () => {
+  const addOrderToFirebase = () => {
     setLoading(true);
     const db = firebase.firestore();
     db.collection("orders")
@@ -108,8 +106,7 @@ export default function ViewCart({ navigation }) {
                   position: "relative",
                 }}
                 onPress={() => {
-                  // console.log("Working")
-                  addOrderToFireBase();
+                  addOrderToFirebase();
                   setModalVisible(false);
                 }}
               >
@@ -177,7 +174,6 @@ export default function ViewCart({ navigation }) {
                 justifyContent: "flex-end",
                 padding: 15,
                 alignItems: "center",
-                // padding:13,
                 borderRadius: 30,
                 width: 300,
                 position: "relative",
@@ -233,7 +229,7 @@ export default function ViewCart({ navigation }) {
                 style={{ height: 200 }}
                 source={require("../../assets/animations/scanner.json")}
                 autoPlay={true}
-                loop={true} // Ensures it loops indefinitely
+                loop={true}
                 speed={3}
               />
             </View>
