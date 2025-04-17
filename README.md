@@ -149,6 +149,18 @@ uber_eats_clone/
 
 ---
 
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td align="center"><strong>Home Screen</strong><br><img src="assets/screenshots/home.png" width="250"/></td>
+    <td align="center"><strong>Restaurant Detail</strong><br><img src="assets/screenshots/restaurant_detail.png" width="250"/></td>
+    <td align="center"><strong>Order Completed</strong><br><img src="assets/screenshots/order_completed.png" width="250"/></td>
+  </tr>
+</table>
+
+---
+
 ## 🤖 CI/CD & Firebase Distribution
 
 ### Fastlane Setup
