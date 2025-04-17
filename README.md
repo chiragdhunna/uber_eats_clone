@@ -68,11 +68,6 @@ This project uses the Google Places API for location-based autocomplete in the s
 GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
 ```
 
-- Make sure `.env` is listed in `.gitignore`
-- You can also use free alternatives like LocationIQ or Mapbox by replacing the GooglePlacesAutocomplete component
-
-> Note: The key is automatically injected into the build via GitHub Actions for CI deployment.
-
 ---
 
 ### 5. Rebuild Native Code (✅ Must-Do Before First Build)
