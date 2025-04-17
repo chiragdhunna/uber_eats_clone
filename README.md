@@ -1,6 +1,6 @@
 # Uber Eats Clone
 
-Welcome to the **Uber Eats Clone** project! This is a full-featured mobile application that mimics the core functionality of Uber Eats, built with **React Native** using the **Expo Bare Workflow**. It supports custom native modules, Firebase integration, and is set up for production-ready Android builds with Kotlin, Java 17, and Gradle 8.10+.
+Welcome to the **Uber Eats Clone** project! This is a full-featured mobile application that mimics the core functionality of Uber Eats, built with **React Native** using the **Expo Bare Workflow**. It supports custom native modules, minimal Firebase integration for order tracking and distribution, and is set up for production-ready Android builds with Kotlin, Java 17, and Gradle 8.10+.
 
 ---
 
@@ -9,11 +9,12 @@ Welcome to the **Uber Eats Clone** project! This is a full-featured mobile appli
 - 🍔 Browse restaurants and food items
 - 📋 View restaurant menus and item details
 - 🛒 Place orders and track delivery status
-- 🔐 Firebase authentication and profile management
+- 🔐 Firebase is used to store order data and handle APK distribution via Fastlane
 - 🔄 Real-time Redux-powered state management
 - ⚙️ Native Android builds (Kotlin + Java 17)
 - 🧒 Fastlane + Firebase App Distribution
 - 🚀 CI/CD with GitHub Actions
+- 🔍 Location-based search using Google Places API (with secure `.env` setup) — supports alternatives like LocationIQ or Mapbox if needed
 
 ---
 
@@ -50,12 +51,31 @@ npm install --legacy-peer-deps
 ### 3. Setup Firebase
 
 - Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-- Enable Authentication (e.g., email/password, phone)
+- Enable Firestore or Realtime Database for order data
+- Enable Authentication (if required)
+- Use Firebase for **distributing APKs via Fastlane**
 - Place your Firebase config in a `firebase.js` file at the project root
 
 ---
 
-### 4. Rebuild Native Code (✅ Must-Do Before First Build)
+### 4. Configure Google Places API (via .env)
+
+This project uses the Google Places API for location-based autocomplete in the search bar.
+
+- Create a `.env` file in the root directory:
+
+```env
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
+```
+
+- Make sure `.env` is listed in `.gitignore`
+- You can also use free alternatives like LocationIQ or Mapbox by replacing the GooglePlacesAutocomplete component
+
+> Note: The key is automatically injected into the build via GitHub Actions for CI deployment.
+
+---
+
+### 5. Rebuild Native Code (✅ Must-Do Before First Build)
 
 Run this to regenerate the native code with clean versions:
 
@@ -67,7 +87,7 @@ npx expo prebuild
 
 ---
 
-### 5. Run Android App
+### 6. Run Android App
 
 ```bash
 npx expo run:android
@@ -77,7 +97,7 @@ npx expo run:android
 
 ---
 
-### 6. (Optional) Run on iOS (macOS only)
+### 7. (Optional) Run on iOS (macOS only)
 
 ```bash
 npx expo run:ios
@@ -145,7 +165,7 @@ On every push to `main`:
 - Uploaded to Firebase Testers
 - Tagged as a GitHub Release with APK attached
 
-> See `.github/workflows/build.yml` for configuration
+> See `.github/workflows/firebase-distribute.yml` for configuration
 
 ---
 
@@ -158,9 +178,10 @@ android/
 ios/
 node_modules/
 .expo/
+.env
 ```
 
-They are auto-generated and machine-specific.
+They are auto-generated and/or environment-specific.
 
 ---
 
