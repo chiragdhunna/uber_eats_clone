@@ -68,6 +68,8 @@ This project uses the Google Places API for location-based autocomplete in the s
 GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
 ```
 
+Make sure your `.env` file is configured before building the app locally.
+
 ---
 
 ### 5. Rebuild Native Code (✅ Must-Do Before First Build)
@@ -208,6 +210,26 @@ Have questions, ideas, or feedback?
 
 - Open an issue on GitHub
 - Or email at: `chiragdhunna2468@gmail.com`
+
+---
+
+## ⚠️ Final Cloning Tip
+
+To avoid build issues due to **excessively long folder paths**, it's strongly recommended to clone the repository into a short and simple directory.
+
+✅ Example (GOOD):
+
+```
+~/Desktop/uber_eats_clone
+```
+
+❌ Example (AVOID):
+
+```
+~/Desktop/Docs/GitHub Projects/My Personal/Mobile/uber_eats_clone
+```
+
+Long paths can cause Gradle and Android tooling to exceed file system limits, especially on Windows.
 
 ---
 
