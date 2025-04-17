@@ -5,6 +5,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import React, { useEffect } from "react";
 import axios from "axios";
 import Geolocation from "@react-native-community/geolocation";
+import { GOOGLE_MAPS_API_KEY } from "@env";
 
 export default function SearchBar({ cityHandler }) {
   // Request location permissions on component mount
@@ -17,7 +18,7 @@ export default function SearchBar({ cityHandler }) {
       <GooglePlacesAutocomplete
         fetchDetails
         query={{
-          key: "AIzaSyCyaJSwPHFDuwIPHb0FssOfphQx3qWHSdw",
+          key: GOOGLE_MAPS_API_KEY,
           language: "en",
         }}
         onPress={(data, details = null) => {

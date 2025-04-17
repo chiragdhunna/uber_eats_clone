@@ -15,6 +15,7 @@ jobs:
 
     env:
       JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+      GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
 
     steps:
       - name: 📥 Checkout Code
@@ -59,6 +60,13 @@ jobs:
           node --print "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })"
           echo "✅ expo path (optional):"
           node --print "require.resolve('expo/package.json')" || echo "expo not found"
+
+      - name: 🔐 Inject Google Maps API Key to .env
+        run: |
+          echo "GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY" > .env
+
+      - name: 🧪 Check .env Contents (DEBUG ONLY)
+        run: cat .env
 
       - name: 📦 Install Fastlane Dependencies
         working-directory: android
