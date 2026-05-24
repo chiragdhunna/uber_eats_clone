@@ -20,6 +20,7 @@ platform :android do
     credentials_file = ENV["FIREBASE_CREDENTIALS_FILE"] || ENV["GOOGLE_APPLICATION_CREDENTIALS"]
     firebase_token = ENV["FIREBASE_TOKEN"]
     credentials_present = !credentials_file.to_s.strip.empty?
+    UI.user_error!("Firebase credentials file not found: #{credentials_file}") if credentials_present && !File.exist?(credentials_file)
     token_present = !firebase_token.to_s.strip.empty?
 
     firebase_distribution_options[:service_credentials_file] = credentials_file if credentials_present

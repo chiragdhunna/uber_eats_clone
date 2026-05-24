@@ -24,10 +24,13 @@ def main() -> None:
     credentials_path.write_text(json.dumps(credentials))
     credentials_path.chmod(0o600)
 
-    for field in ("private_key", "private_key_id", "client_email", "client_id"):
+    for field in ("private_key", "private_key_id", "client_email", "client_id", "project_id"):
         value = credentials.get(field)
         if value:
             print(f"::add-mask::{value}")
+    client_email = credentials.get("client_email", "")
+    if "@" in client_email:
+        print(f"::add-mask::{client_email.split('@', 1)[1]}")
     print(f"::add-mask::{raw_value}")
 
     github_env = Path(os.environ["GITHUB_ENV"])
