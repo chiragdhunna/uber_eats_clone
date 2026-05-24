@@ -90,14 +90,10 @@ jobs:
             echo "Using Firebase service account credentials."
           elif [ -n "$FIREBASE_TOKEN" ]; then
             token_is_service_account_json=false
-            if printf '%s' "$FIREBASE_TOKEN" | grep -q '"private_key"' \
-              && printf '%s' "$FIREBASE_TOKEN" | grep -q '"client_email"' \
-              && printf '%s' "$FIREBASE_TOKEN" | grep -q '"project_id"'; then
+            if printf '%s' "$FIREBASE_TOKEN" | python3 -c "import json,sys; raw=sys.stdin.read().strip(); required=('private_key','client_email','project_id'); data=json.loads(raw); raise SystemExit(0 if isinstance(data, dict) and all(data.get(field) for field in required) else 1)" 2>/dev/null; then
               token_is_service_account_json=true
             elif decoded_token="$(printf '%s' "$FIREBASE_TOKEN" | base64 --decode 2>/dev/null)" \
-              && printf '%s' "$decoded_token" | grep -q '"private_key"' \
-              && printf '%s' "$decoded_token" | grep -q '"client_email"' \
-              && printf '%s' "$decoded_token" | grep -q '"project_id"'; then
+              && printf '%s' "$decoded_token" | python3 -c "import json,sys; raw=sys.stdin.read().strip(); required=('private_key','client_email','project_id'); data=json.loads(raw); raise SystemExit(0 if isinstance(data, dict) and all(data.get(field) for field in required) else 1)" 2>/dev/null; then
               FIREBASE_TOKEN="$decoded_token"
               token_is_service_account_json=true
             fi
