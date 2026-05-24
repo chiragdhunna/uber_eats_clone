@@ -22,6 +22,7 @@ def main() -> None:
 
     credentials_path = Path(os.environ["RUNNER_TEMP"]) / "firebase-service-account.json"
     credentials_path.write_text(json.dumps(credentials))
+    credentials_path.chmod(0o600)
 
     for field in ("private_key", "private_key_id", "client_email", "client_id"):
         value = credentials.get(field)
