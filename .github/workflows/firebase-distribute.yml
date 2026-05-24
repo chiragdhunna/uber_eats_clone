@@ -80,8 +80,21 @@ jobs:
         working-directory: android
         run: bundle install
 
-      - name: 🔐 Authenticate Firebase CLI
-        run: echo "${{ secrets.FIREBASE_TOKEN }}" > ~/.firebase_token
+      - name: 🔐 Prepare Firebase App Distribution Credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          if [ -n "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
+            python3 .github/scripts/prepare_firebase_credentials.py
+            echo "Using Firebase service account credentials."
+          elif [ -n "$FIREBASE_TOKEN" ]; then
+            echo "FIREBASE_TOKEN=$FIREBASE_TOKEN" >> "$GITHUB_ENV"
+            echo "Using legacy Firebase CLI token."
+          else
+            echo "::error::Missing Firebase App Distribution credentials. Set the FIREBASE_SERVICE_ACCOUNT_JSON (recommended) or FIREBASE_TOKEN secret in repository settings."
+            exit 1
+          fi
 
       - name: 🛠 Fix Gradlew Permission
         run: chmod +x android/gradlew
