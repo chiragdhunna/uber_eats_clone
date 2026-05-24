@@ -16,7 +16,10 @@ def main() -> int:
         return 1
 
     required_fields = ("private_key", "client_email", "project_id")
-    if all(payload.get(field) for field in required_fields):
+    if all(
+        isinstance(payload.get(field), str) and payload.get(field).strip()
+        for field in required_fields
+    ):
         return 0
 
     return 1

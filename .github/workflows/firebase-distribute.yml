@@ -92,10 +92,13 @@ jobs:
             token_is_service_account_json=false
             if printf '%s' "$FIREBASE_TOKEN" | python3 .github/scripts/is_firebase_service_account_payload.py; then
               token_is_service_account_json=true
-            elif decoded_token="$(printf '%s' "$FIREBASE_TOKEN" | base64 --decode 2>/dev/null)" \
-              && printf '%s' "$decoded_token" | python3 .github/scripts/is_firebase_service_account_payload.py; then
-              FIREBASE_TOKEN="$decoded_token"
-              token_is_service_account_json=true
+            elif decoded_token="$(printf '%s' "$FIREBASE_TOKEN" | base64 --decode 2>/dev/null)"; then
+              if printf '%s' "$decoded_token" | python3 .github/scripts/is_firebase_service_account_payload.py; then
+                FIREBASE_TOKEN="$decoded_token"
+                token_is_service_account_json=true
+              fi
+            else
+              echo "FIREBASE_TOKEN is not valid base64 service account payload; trying legacy token auth."
             fi
 
             if [ "$token_is_service_account_json" = true ]; then
