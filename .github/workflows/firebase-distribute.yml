@@ -89,15 +89,11 @@ jobs:
             python3 .github/scripts/prepare_firebase_credentials.py
             echo "Using Firebase service account credentials."
           elif [ -n "$FIREBASE_TOKEN" ]; then
-            validate_service_account_json() {
-              python3 -c "import json,sys; raw=sys.stdin.read().strip(); required=('private_key','client_email','project_id'); data=json.loads(raw); raise SystemExit(0 if isinstance(data, dict) and all(data.get(field) for field in required) else 1)" 2>/dev/null
-            }
-
             token_is_service_account_json=false
-            if printf '%s' "$FIREBASE_TOKEN" | validate_service_account_json; then
+            if printf '%s' "$FIREBASE_TOKEN" | python3 .github/scripts/is_firebase_service_account_payload.py; then
               token_is_service_account_json=true
             elif decoded_token="$(printf '%s' "$FIREBASE_TOKEN" | base64 --decode 2>/dev/null)" \
-              && printf '%s' "$decoded_token" | validate_service_account_json; then
+              && printf '%s' "$decoded_token" | python3 .github/scripts/is_firebase_service_account_payload.py; then
               FIREBASE_TOKEN="$decoded_token"
               token_is_service_account_json=true
             fi
@@ -107,7 +103,7 @@ jobs:
               python3 .github/scripts/prepare_firebase_credentials.py
               echo "Detected service account JSON in FIREBASE_TOKEN and used it as credentials."
             else
-              echo "FIREBASE_TOKEN is not in service-account JSON format; using legacy Firebase CLI token."
+              echo "FIREBASE_TOKEN is not in service account JSON format; using legacy Firebase CLI token."
               echo "FIREBASE_TOKEN=$FIREBASE_TOKEN" >> "$GITHUB_ENV"
             fi
           else
