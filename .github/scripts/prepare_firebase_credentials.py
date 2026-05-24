@@ -19,8 +19,22 @@ def load_credentials(raw_value: str) -> dict:
 def main() -> None:
     raw_value = os.environ["FIREBASE_SERVICE_ACCOUNT_JSON"].strip()
     credentials = load_credentials(raw_value)
+    required_fields = ("private_key", "client_email", "project_id")
+    missing_fields = [field for field in required_fields if not credentials.get(field)]
+    if missing_fields:
+        raise SystemExit(
+            f"FIREBASE_SERVICE_ACCOUNT_JSON is missing required field(s): {', '.join(missing_fields)}."
+        )
 
-    credentials_path = Path(os.environ["RUNNER_TEMP"]) / "firebase-service-account.json"
+    runner_temp = os.environ.get("RUNNER_TEMP", "").strip()
+    if not runner_temp:
+        raise SystemExit("RUNNER_TEMP is not set.")
+
+    runner_temp_path = Path(runner_temp)
+    if not runner_temp_path.exists():
+        raise SystemExit(f"RUNNER_TEMP does not exist: {runner_temp_path}")
+
+    credentials_path = runner_temp_path / "firebase-service-account.json"
     credentials_path.write_text(json.dumps(credentials))
     credentials_path.chmod(0o600)
 

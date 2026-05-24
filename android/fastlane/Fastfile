@@ -24,7 +24,7 @@ platform :android do
     token_present = !firebase_token.to_s.strip.empty?
 
     firebase_distribution_options[:service_credentials_file] = credentials_file if credentials_present
-    if !credentials_present && token_present
+    if token_present && !credentials_present
       firebase_distribution_options[:firebase_cli_token] = firebase_token
     end
 
