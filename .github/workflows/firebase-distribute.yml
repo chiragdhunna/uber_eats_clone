@@ -86,7 +86,7 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
           if [ -n "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
-            python .github/scripts/prepare_firebase_credentials.py
+            python3 .github/scripts/prepare_firebase_credentials.py
             echo "Using Firebase service account credentials."
           elif [ -n "$FIREBASE_TOKEN" ]; then
             echo "FIREBASE_TOKEN=$FIREBASE_TOKEN" >> "$GITHUB_ENV"
