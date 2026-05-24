@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        description: "Release notes for testers"
+        required: false
+        default: "Manual build"
 
 permissions:
   contents: write
@@ -91,7 +97,8 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-        run: bundle exec fastlane beta
+          RELEASE_NOTES: ${{ github.event.inputs.release_notes || 'Push build' }}
+        run: bundle exec fastlane beta release_notes:"$RELEASE_NOTES"
 
       - name: Upload APK to GitHub Release
         uses: ncipollo/release-action@v1
