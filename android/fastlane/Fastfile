@@ -2,7 +2,7 @@ default_platform(:android)
 
 platform :android do
   desc "Distribute to Firebase App Distribution"
-  lane :beta do
+  lane :beta do |options|
     release_notes = options[:release_notes] || ENV["RELEASE_NOTES"] || "Push build"
 
     gradle(
