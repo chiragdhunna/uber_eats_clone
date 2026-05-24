@@ -21,7 +21,9 @@ platform :android do
     firebase_token = ENV["FIREBASE_TOKEN"]
 
     firebase_distribution_options[:service_credentials_file] = credentials_file if credentials_file.to_s.strip != ""
-    firebase_distribution_options[:firebase_cli_token] = firebase_token if firebase_token.to_s.strip != ""
+    if firebase_distribution_options[:service_credentials_file].nil? && firebase_token.to_s.strip != ""
+      firebase_distribution_options[:firebase_cli_token] = firebase_token
+    end
 
     firebase_app_distribution(**firebase_distribution_options)
   end
