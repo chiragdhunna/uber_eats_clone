@@ -80,8 +80,41 @@ jobs:
         working-directory: android
         run: bundle install
 
-      - name: 🔐 Authenticate Firebase CLI
-        run: echo "${{ secrets.FIREBASE_TOKEN }}" > ~/.firebase_token
+      - name: 🔐 Prepare Firebase App Distribution Credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          if [ -n "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
+            python - <<'PY'
+            import base64
+            import json
+            import os
+            from pathlib import Path
+
+            raw_value = os.environ["FIREBASE_SERVICE_ACCOUNT_JSON"].strip()
+            try:
+              credentials = json.loads(raw_value)
+            except json.JSONDecodeError:
+              credentials = json.loads(base64.b64decode(raw_value).decode("utf-8"))
+
+            credentials_path = Path(os.environ["RUNNER_TEMP"]) / "firebase-service-account.json"
+            credentials_path.write_text(json.dumps(credentials))
+            print(f"::add-mask::{credentials_path}")
+
+            github_env = Path(os.environ["GITHUB_ENV"])
+            with github_env.open("a") as env_file:
+              env_file.write(f"GOOGLE_APPLICATION_CREDENTIALS={credentials_path}\n")
+              env_file.write(f"FIREBASE_CREDENTIALS_FILE={credentials_path}\n")
+            PY
+            echo "Using Firebase service account credentials."
+          elif [ -n "$FIREBASE_TOKEN" ]; then
+            echo "FIREBASE_TOKEN=$FIREBASE_TOKEN" >> "$GITHUB_ENV"
+            echo "Using legacy Firebase CLI token."
+          else
+            echo "::error::Missing Firebase App Distribution credentials. Set FIREBASE_SERVICE_ACCOUNT_JSON (recommended) or FIREBASE_TOKEN."
+            exit 1
+          fi
 
       - name: 🛠 Fix Gradlew Permission
         run: chmod +x android/gradlew

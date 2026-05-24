@@ -3,15 +3,26 @@ default_platform(:android)
 platform :android do
   desc "Distribute to Firebase App Distribution"
   lane :beta do
+    release_notes = options[:release_notes] || ENV["RELEASE_NOTES"] || "Push build"
+
     gradle(
       task: "assemble",
       build_type: "Release"
     )
 
-    firebase_app_distribution(
-      app: "1:471625841737:android:604613a3e5062dd8a65398", 
-      groups: "internal-testers", 
-      apk_path: "app/build/outputs/apk/release/app-release.apk"
-    )
+    firebase_distribution_options = {
+      app: ENV["FIREBASE_APP_ID"] || "1:471625841737:android:604613a3e5062dd8a65398",
+      groups: ENV["FIREBASE_GROUPS"] || "internal-testers",
+      apk_path: "app/build/outputs/apk/release/app-release.apk",
+      release_notes: release_notes
+    }
+
+    credentials_file = ENV["FIREBASE_CREDENTIALS_FILE"] || ENV["GOOGLE_APPLICATION_CREDENTIALS"]
+    firebase_token = ENV["FIREBASE_TOKEN"]
+
+    firebase_distribution_options[:service_credentials_file] = credentials_file if credentials_file.to_s.strip != ""
+    firebase_distribution_options[:firebase_cli_token] = firebase_token if firebase_token.to_s.strip != ""
+
+    firebase_app_distribution(**firebase_distribution_options)
   end
 end
