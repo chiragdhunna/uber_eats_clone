@@ -19,10 +19,11 @@ platform :android do
 
     credentials_file = ENV["FIREBASE_CREDENTIALS_FILE"] || ENV["GOOGLE_APPLICATION_CREDENTIALS"]
     firebase_token = ENV["FIREBASE_TOKEN"]
-    credentials_present = credentials_file.to_s.strip != ""
+    credentials_present = !credentials_file.to_s.strip.empty?
+    token_present = !firebase_token.to_s.strip.empty?
 
     firebase_distribution_options[:service_credentials_file] = credentials_file if credentials_present
-    if !credentials_present && firebase_token.to_s.strip != ""
+    if !credentials_present && token_present
       firebase_distribution_options[:firebase_cli_token] = firebase_token
     end
 

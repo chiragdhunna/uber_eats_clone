@@ -92,7 +92,7 @@ jobs:
             echo "FIREBASE_TOKEN=$FIREBASE_TOKEN" >> "$GITHUB_ENV"
             echo "Using legacy Firebase CLI token."
           else
-            echo "::error::Missing Firebase App Distribution credentials. Set FIREBASE_SERVICE_ACCOUNT_JSON (recommended) or FIREBASE_TOKEN."
+            echo "::error::Missing Firebase App Distribution credentials. Set the FIREBASE_SERVICE_ACCOUNT_JSON (recommended) or FIREBASE_TOKEN secret in repository settings."
             exit 1
           fi
 
