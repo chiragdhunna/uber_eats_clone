@@ -89,8 +89,27 @@ jobs:
             python3 .github/scripts/prepare_firebase_credentials.py
             echo "Using Firebase service account credentials."
           elif [ -n "$FIREBASE_TOKEN" ]; then
-            echo "FIREBASE_TOKEN=$FIREBASE_TOKEN" >> "$GITHUB_ENV"
-            echo "Using legacy Firebase CLI token."
+            token_is_service_account_json=false
+            if printf '%s' "$FIREBASE_TOKEN" | grep -q '"private_key"' \
+              && printf '%s' "$FIREBASE_TOKEN" | grep -q '"client_email"' \
+              && printf '%s' "$FIREBASE_TOKEN" | grep -q '"project_id"'; then
+              token_is_service_account_json=true
+            elif decoded_token="$(printf '%s' "$FIREBASE_TOKEN" | base64 --decode 2>/dev/null)" \
+              && printf '%s' "$decoded_token" | grep -q '"private_key"' \
+              && printf '%s' "$decoded_token" | grep -q '"client_email"' \
+              && printf '%s' "$decoded_token" | grep -q '"project_id"'; then
+              FIREBASE_TOKEN="$decoded_token"
+              token_is_service_account_json=true
+            fi
+
+            if [ "$token_is_service_account_json" = true ]; then
+              export FIREBASE_SERVICE_ACCOUNT_JSON="$FIREBASE_TOKEN"
+              python3 .github/scripts/prepare_firebase_credentials.py
+              echo "Detected service account JSON in FIREBASE_TOKEN and used it as credentials."
+            else
+              echo "FIREBASE_TOKEN=$FIREBASE_TOKEN" >> "$GITHUB_ENV"
+              echo "Using legacy Firebase CLI token."
+            fi
           else
             echo "::error::Missing Firebase App Distribution credentials. Set the FIREBASE_SERVICE_ACCOUNT_JSON (recommended) or FIREBASE_TOKEN secret in repository settings."
             exit 1
