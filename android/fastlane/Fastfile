@@ -17,14 +17,19 @@ platform :android do
       release_notes: release_notes
     }
 
-    credentials_file = ENV["FIREBASE_CREDENTIALS_FILE"] || ENV["GOOGLE_APPLICATION_CREDENTIALS"]
+    credentials_file = ENV["FIREBASE_CREDENTIALS_FILE"]
+    google_application_credentials = ENV["GOOGLE_APPLICATION_CREDENTIALS"]
     firebase_token = ENV["FIREBASE_TOKEN"]
     credentials_present = !credentials_file.to_s.strip.empty?
+    google_application_credentials_present = !google_application_credentials.to_s.strip.empty?
     UI.user_error!("Firebase credentials file not found: #{credentials_file}") if credentials_present && !File.exist?(credentials_file)
+    UI.user_error!("Google application credentials file not found: #{google_application_credentials}") if google_application_credentials_present && !File.exist?(google_application_credentials)
     token_present = !firebase_token.to_s.strip.empty?
 
     if credentials_present
       firebase_distribution_options[:service_credentials_file] = credentials_file
+    elsif google_application_credentials_present
+      UI.message("Using GOOGLE_APPLICATION_CREDENTIALS for Firebase App Distribution authentication.")
     elsif token_present
       firebase_distribution_options[:firebase_cli_token] = firebase_token
     end

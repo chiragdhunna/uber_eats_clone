@@ -87,19 +87,20 @@ jobs:
         run: |
           if [ -n "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
             python3 .github/scripts/prepare_firebase_credentials.py
-            echo "Using Firebase service account credentials."
+            echo "FIREBASE_USE_LEGACY_TOKEN=false" >> "$GITHUB_ENV"
+            echo "Using Google credentials from FIREBASE_SERVICE_ACCOUNT_JSON."
           elif [ -n "$FIREBASE_TOKEN" ]; then
-            token_is_service_account_json=false
+            token_is_google_credentials_json=false
             if printf '%s' "$FIREBASE_TOKEN" | python3 .github/scripts/is_firebase_service_account_payload.py; then
-              token_is_service_account_json=true
+              token_is_google_credentials_json=true
             else
               decoded_token_file="$(mktemp)"
               if printf '%s' "$FIREBASE_TOKEN" | base64 --decode > "$decoded_token_file" 2>/dev/null; then
                 if [ -s "$decoded_token_file" ] && python3 .github/scripts/is_firebase_service_account_payload.py < "$decoded_token_file"; then
                   FIREBASE_TOKEN="$(cat "$decoded_token_file")"
-                  token_is_service_account_json=true
+                  token_is_google_credentials_json=true
                 else
-                  echo "FIREBASE_TOKEN was decoded from base64 but is not valid service account JSON; trying legacy token auth."
+                  echo "FIREBASE_TOKEN was decoded from base64 but is not supported Google credentials JSON; trying legacy token auth."
                 fi
               else
                 echo "FIREBASE_TOKEN is not valid base64; trying legacy token auth."
@@ -107,16 +108,17 @@ jobs:
               rm -f "$decoded_token_file"
             fi
 
-            if [ "$token_is_service_account_json" = true ]; then
+            if [ "$token_is_google_credentials_json" = true ]; then
               export FIREBASE_SERVICE_ACCOUNT_JSON="$FIREBASE_TOKEN"
               python3 .github/scripts/prepare_firebase_credentials.py
-              echo "Detected service account JSON in FIREBASE_TOKEN and used it as credentials."
+              echo "FIREBASE_USE_LEGACY_TOKEN=false" >> "$GITHUB_ENV"
+              echo "Detected Google credentials JSON in FIREBASE_TOKEN and prepared application credentials."
             else
-              echo "FIREBASE_TOKEN is not in service account JSON format; using legacy Firebase CLI token."
-              echo "FIREBASE_TOKEN=$FIREBASE_TOKEN" >> "$GITHUB_ENV"
+              echo "FIREBASE_TOKEN is not in supported Google credentials JSON format; using legacy Firebase CLI token."
+              echo "FIREBASE_USE_LEGACY_TOKEN=true" >> "$GITHUB_ENV"
             fi
           else
-            echo "::error::Missing Firebase App Distribution credentials. Set the FIREBASE_SERVICE_ACCOUNT_JSON (recommended) or FIREBASE_TOKEN secret in repository settings."
+            echo "::error::Missing Firebase App Distribution credentials. Set FIREBASE_SERVICE_ACCOUNT_JSON (recommended) or FIREBASE_TOKEN (legacy refresh token or base64/raw Google credentials JSON) in repository settings."
             exit 1
           fi
 
@@ -132,10 +134,15 @@ jobs:
       - name: 🚀 Distribute via Fastlane
         working-directory: android
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           RELEASE_NOTES: ${{ github.event.inputs.release_notes || 'Push build' }}
-        run: bundle exec fastlane beta release_notes:"$RELEASE_NOTES"
+        run: |
+          if [ "${FIREBASE_USE_LEGACY_TOKEN:-false}" = "true" ]; then
+            export FIREBASE_TOKEN="${{ secrets.FIREBASE_TOKEN }}"
+          else
+            unset FIREBASE_TOKEN
+          fi
+          bundle exec fastlane beta release_notes:"$RELEASE_NOTES"
 
       - name: Upload APK to GitHub Release
         uses: ncipollo/release-action@v1

@@ -3,27 +3,29 @@ import json
 import os
 from pathlib import Path
 
+from is_firebase_service_account_payload import supported_google_credentials_type
+
 
 def load_credentials(raw_value: str) -> dict:
     try:
         return json.loads(raw_value)
     except json.JSONDecodeError:
         try:
-            return json.loads(base64.b64decode(raw_value).decode("utf-8"))
+            return json.loads(base64.b64decode(raw_value, validate=True).decode("utf-8"))
         except Exception as exc:
             raise SystemExit(
-                "FIREBASE_SERVICE_ACCOUNT_JSON must be valid JSON or a base64-encoded JSON document."
+                "FIREBASE_SERVICE_ACCOUNT_JSON must be valid Google credentials JSON or a base64-encoded JSON document."
             ) from exc
 
 
 def main() -> None:
     raw_value = os.environ["FIREBASE_SERVICE_ACCOUNT_JSON"].strip()
     credentials = load_credentials(raw_value)
-    required_fields = ("private_key", "client_email", "project_id")
-    missing_fields = [field for field in required_fields if not credentials.get(field)]
-    if missing_fields:
+    credentials_type = supported_google_credentials_type(credentials)
+    if not credentials_type:
         raise SystemExit(
-            f"FIREBASE_SERVICE_ACCOUNT_JSON is missing required field(s): {', '.join(missing_fields)}."
+            "FIREBASE_SERVICE_ACCOUNT_JSON must be a supported Google credentials document "
+            "(service_account, authorized_user, or external_account)."
         )
 
     runner_temp = os.environ.get("RUNNER_TEMP", "").strip()
@@ -38,7 +40,18 @@ def main() -> None:
     credentials_path.write_text(json.dumps(credentials))
     credentials_path.chmod(0o600)
 
-    for field in ("private_key", "private_key_id", "client_email", "client_id", "project_id"):
+    for field in (
+        "private_key",
+        "private_key_id",
+        "client_email",
+        "client_id",
+        "client_secret",
+        "refresh_token",
+        "project_id",
+        "audience",
+        "subject_token_type",
+        "token_url",
+    ):
         value = credentials.get(field)
         if value:
             print(f"::add-mask::{value}")
@@ -50,7 +63,11 @@ def main() -> None:
     github_env = Path(os.environ["GITHUB_ENV"])
     with github_env.open("a") as env_file:
         env_file.write(f"GOOGLE_APPLICATION_CREDENTIALS={credentials_path}\n")
-        env_file.write(f"FIREBASE_CREDENTIALS_FILE={credentials_path}\n")
+        if credentials_type in {"service_account", "external_account"}:
+            env_file.write(f"FIREBASE_CREDENTIALS_FILE={credentials_path}\n")
+        else:
+            env_file.write("FIREBASE_CREDENTIALS_FILE=\n")
+        env_file.write(f"FIREBASE_CREDENTIALS_TYPE={credentials_type}\n")
 
 
 if __name__ == "__main__":

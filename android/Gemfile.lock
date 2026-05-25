@@ -1,5 +1,4 @@
 GEM
-  remote: https://rubygems.org/
   specs:
     CFPropertyList (3.0.7)
       base64
@@ -225,11 +224,10 @@ GEM
 
 PLATFORMS
   x64-mingw-ucrt
-  x86_64-linux-gnu
 
 DEPENDENCIES
   fastlane
   fastlane-plugin-firebase_app_distribution
 
 BUNDLED WITH
-   2.5.23
+   2.6.8
